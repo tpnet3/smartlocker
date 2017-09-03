@@ -1,0 +1,7 @@
+C:\Users\tpnet3\source\repos\SmartLocker\SmartLocker\bin\Debug\SmartLocker.exe.config
+C:\Users\tpnet3\source\repos\SmartLocker\SmartLocker\bin\Debug\SmartLocker.exe
+C:\Users\tpnet3\source\repos\SmartLocker\SmartLocker\bin\Debug\SmartLocker.pdb
+C:\Users\tpnet3\source\repos\SmartLocker\SmartLocker\obj\Debug\SmartLocker.csprojResolveAssemblyReference.cache
+C:\Users\tpnet3\source\repos\SmartLocker\SmartLocker\obj\Debug\SmartLocker.csproj.CoreCompileInputs.cache
+C:\Users\tpnet3\source\repos\SmartLocker\SmartLocker\obj\Debug\SmartLocker.exe
+C:\Users\tpnet3\source\repos\SmartLocker\SmartLocker\obj\Debug\SmartLocker.pdb
