@@ -16,5 +16,14 @@ namespace SmartLockerTemplate
         {
             InitializeComponent();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string id = this.idTextBox.Text;
+            string pw = this.pwTextBox.Text;
+            
+            MessageBox.Show("ID: " + id + ", PW: " + pw, "로그인",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
     }
 }
