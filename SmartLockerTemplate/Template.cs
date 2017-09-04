@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Forms;
 
 namespace SmartLockerTemplate
@@ -15,13 +16,16 @@ namespace SmartLockerTemplate
         private readonly string BINARY/*@BINARY*/;
 
         // exe 해시값이 바운드 됩니다.
-        private readonly string EXEHASH/*@EXEHASH*/;
+        private readonly string EXE_HASH/*@EXE_HASH*/;
 
         // 원본 파일 이름이 바운드 됩니다.
         private static readonly string FILENAME/*@FILENAME*/;
 
         // .NET 여부가 바운드 됩니다. (0: .net 아님, 1: .net)
         public static readonly int IS_DOT_NET/*@IS_DOT_NET*/;
+
+        // 공개키
+        public static readonly string publicKey = "";
         
         // 맥주소
         public static readonly string macAddr =
@@ -57,11 +61,13 @@ namespace SmartLockerTemplate
 
         private void StartProgram(string[] args)
         {
-            // 라이센스 파일 존재 여부 확인
-            if (ExistLic())
+            // 라이센스 파일 가져오기, 없을 경우 null
+            string lic = GetLic();
+
+            if (lic != null)
             {
                 // 라이센스 만료 확인
-                if (CheckLic())
+                if (CheckLic(lic))
                 {
                     // 프로그램 실행
                     new SourceProgram(args, Convert.FromBase64String(BINARY));
@@ -76,7 +82,8 @@ namespace SmartLockerTemplate
                     }
                     else
                     {
-                        // TODO: 라이센스 구입
+                        MessageBox.Show("라이센스 구입이 필요합니다.", "라이센스 오류",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
@@ -92,22 +99,36 @@ namespace SmartLockerTemplate
             Application.Run(new LoginForm());
         }
 
-        private bool ExistLic()
+        private string GetLic()
         {
             // TODO: 라이센스 존재 여부 확인
-            return File.Exists(licenseFile);
+            if (File.Exists(licenseFile))
+            {
+                return Encoding.UTF8.GetString(File.ReadAllBytes(licenseFile));
+            }
+
+            return null;
         }
 
-        private bool CheckLic()
+        private bool CheckLic(string lic)
         {
             // TODO: 올바른 라이센스인지 확인
-            return true;
+
+            if (lic.Contains("true"))
+            {
+                return true;
+            }
+            
+            return false;
         }
 
         private bool RefreshLic()
         {
             // TODO: 라이센스 갱신
-            return true;
+            //File.Delete(licenseFile);
+            //File.WriteAllBytes(licenseFile, Encoding.UTF8.GetBytes("true"));
+
+            return false;
         }
     }
 
