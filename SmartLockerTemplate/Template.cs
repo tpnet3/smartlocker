@@ -102,6 +102,7 @@ namespace SmartLockerTemplate
         private string GetLic()
         {
             // TODO: 라이센스 존재 여부 확인
+
             if (File.Exists(licenseFile))
             {
                 return Encoding.UTF8.GetString(File.ReadAllBytes(licenseFile));
@@ -114,7 +115,21 @@ namespace SmartLockerTemplate
         {
             // TODO: 올바른 라이센스인지 확인
 
-            if (lic.Contains("true"))
+            string[] keyStr = lic.Split('\"');
+            
+            if (keyStr.Length != 3)
+            {
+                return false;
+            }
+
+            string[] keyList = keyStr[1].Split(',');
+
+            if (keyList.Length != 2)
+            {
+                return false;
+            }
+
+            if (keyList[0].Equals(macAddr) && keyList[1].Equals(EXE_HASH))
             {
                 return true;
             }

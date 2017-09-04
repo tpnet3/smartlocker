@@ -217,7 +217,7 @@ namespace SmartLocker
                             .Replace("/*@BINARY*/", csBinary)
                             .Replace("/*@FILENAME*/", csFilename)
                             .Replace("/*@IS_DOT_NET*/", csIsdotnet)
-                            .Replace("/*@EXE_HASH*/", hash));
+                            .Replace("/*@EXE_HASH*/", "=\"" + hash + "\""));
                 }
             }
 
