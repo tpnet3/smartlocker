@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -12,12 +14,22 @@ namespace SmartLockerTemplate
         // exe 바이너리가 바운드 됩니다.
         private readonly string BINARY/*@BINARY*/;
 
+        // exe 해시값이 바운드 됩니다.
+        private readonly string EXEHASH/*@EXEHASH*/;
+
         // 원본 파일 이름이 바운드 됩니다.
         private static readonly string FILENAME/*@FILENAME*/;
 
         // .NET 여부가 바운드 됩니다. (0: .net 아님, 1: .net)
         public static readonly int IS_DOT_NET/*@IS_DOT_NET*/;
-
+        
+        // 맥주소
+        public static readonly string macAddr =
+            (
+                from nic in NetworkInterface.GetAllNetworkInterfaces()
+                where nic.OperationalStatus == OperationalStatus.Up
+                select nic.GetPhysicalAddress().ToString()
+            ).FirstOrDefault();
 
         // 실행 파일 경로
         public static readonly string curFullname = Process.GetCurrentProcess().MainModule.FileName;

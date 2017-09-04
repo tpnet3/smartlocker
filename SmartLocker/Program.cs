@@ -76,7 +76,7 @@ namespace SmartLocker
             }
 
             // 실행파일에 맞는 cs 파일 생성
-            SaveCs(templateSrc, tmpCsSrc, bin, filename);
+            SaveCs(templateSrc, tmpCsSrc, bin, filename, hash);
 
             // 아이콘 파일 생성
             if (icoSrc == null)
@@ -189,7 +189,7 @@ namespace SmartLocker
             return Sb.ToString();
         }
 
-        private void SaveCs(string templateLoc, string csLoc, byte[] bin, string filename)
+        private void SaveCs(string templateLoc, string csLoc, byte[] bin, string filename, string hash)
         {
             int isDotNet;
 
@@ -216,7 +216,8 @@ namespace SmartLocker
                     file.WriteLine(sr.ReadLine()
                             .Replace("/*@BINARY*/", csBinary)
                             .Replace("/*@FILENAME*/", csFilename)
-                            .Replace("/*@IS_DOT_NET*/", csIsdotnet));
+                            .Replace("/*@IS_DOT_NET*/", csIsdotnet)
+                            .Replace("/*@EXE_HASH*/", hash));
                 }
             }
 
