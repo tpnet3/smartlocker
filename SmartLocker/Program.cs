@@ -26,8 +26,9 @@ namespace SmartLocker
 
         private int Run()
         {
-            string fileLocation = System.Reflection.Assembly.GetEntryAssembly().Location;
-            string templateSrc = Path.GetDirectoryName(fileLocation) + @"\Template.cs";
+            string fileLocation = Assembly.GetEntryAssembly().Location;
+            string curDir = Path.GetDirectoryName(fileLocation);
+            string templateSrc = curDir + @"\SmartLockerTemplate\Template.cs";
 
             string exeSrc;
             string icoSrc = null;
@@ -58,10 +59,7 @@ namespace SmartLocker
             string tmpDir = Path.GetTempPath() + @"smartlocker\" + hash + @"\";
 
             // 임시 디렉토리 생성
-            if (!Directory.Exists(tmpDir))
-            {
-                Directory.CreateDirectory(tmpDir);
-            }
+            CreateDirIfNotExist(tmpDir);
 
             // 임시 파일 설정
             string tmpCsSrc = tmpDir + filename + ".cs";
@@ -100,7 +98,9 @@ namespace SmartLocker
             argStr += icoSrc != null ? " /win32icon:\"" + icoSrc + "\"" : "";
             argStr += " /main:SmartLockerTemplate.Template";
             argStr += " \"" + tmpCsSrc + "\"";
-            
+            argStr += " \"" + curDir + @"\SmartLockerTemplate\LoginForm.cs" + "\"";
+            argStr += " \"" + curDir + @"\SmartLockerTemplate\LoginForm.Designer.cs" + "\"";
+
             Process proc = ProcessStart(cscPath, argStr);
 
             while (!proc.StandardOutput.EndOfStream)
@@ -114,10 +114,28 @@ namespace SmartLocker
             }
 
             proc.WaitForExit();
-
+            
             if (proc.ExitCode == 0)
             {
-                Console.WriteLine("SUCCESS: " + outSrc);
+                string finalDir = curDir + @"\" + hash;
+                string finalSrc = finalDir + @"\" + filename;
+                
+                // 파일을 저장할 디렉토리 생성
+                CreateDirIfNotExist(finalDir);
+
+                // 생성된 파일 이동
+                if (File.Exists(finalSrc))
+                {
+                    File.Delete(finalSrc);
+                }
+
+                File.Move(outSrc, finalSrc);
+
+                // 임시 폴더 삭제
+                Directory.Delete(tmpDir, true);
+                
+                Console.WriteLine("SUCCESS: " + finalSrc);
+
                 return 0;
             }
             else
@@ -125,6 +143,14 @@ namespace SmartLocker
                 Console.WriteLine();
                 Console.WriteLine("ERROR");
                 return 1;
+            }
+        }
+
+        private void CreateDirIfNotExist(string dir)
+        {
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
             }
         }
 

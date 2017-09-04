@@ -1,0 +1,6 @@
+D:\source\smartlocker\HelloWorld\bin\Debug\HelloWorld.exe.config
+D:\source\smartlocker\HelloWorld\bin\Debug\HelloWorld.exe
+D:\source\smartlocker\HelloWorld\bin\Debug\HelloWorld.pdb
+D:\source\smartlocker\HelloWorld\obj\Debug\HelloWorld.csproj.CoreCompileInputs.cache
+D:\source\smartlocker\HelloWorld\obj\Debug\HelloWorld.exe
+D:\source\smartlocker\HelloWorld\obj\Debug\HelloWorld.pdb

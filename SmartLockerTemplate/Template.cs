@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace SmartLockerTemplate
 {
@@ -17,10 +18,15 @@ namespace SmartLockerTemplate
         // .NET 여부가 바운드 됩니다. (0: .net 아님, 1: .net)
         public static readonly int IS_DOT_NET/*@IS_DOT_NET*/;
 
+
         // 실행 파일 경로
         public static readonly string curFullname = Process.GetCurrentProcess().MainModule.FileName;
         public static readonly string curFilename = curFullname.Substring(curFullname.LastIndexOf("\\") + 1);
         public static readonly string exeSrc = Environment.CurrentDirectory + @"\_" + curFilename;
+
+        private static readonly string fileLocation = Assembly.GetEntryAssembly().Location;
+        private static readonly string curDir = Path.GetDirectoryName(fileLocation);
+        private static readonly string licenseFile = curDir + @"\license.key";
 
         static void Main(string[] args)
         {
@@ -33,8 +39,63 @@ namespace SmartLockerTemplate
             // 강제 종료 이벤트 리스너
             new EventListener();
 
-            // 프로그램 실행
-            new SourceProgram(args, Convert.FromBase64String(BINARY));
+            // 프로그램 시작
+            StartProgram(args);
+        }
+
+        private void StartProgram(string[] args)
+        {
+            // 라이센스 파일 존재 여부 확인
+            if (ExistLic())
+            {
+                // 라이센스 만료 확인
+                if (CheckLic())
+                {
+                    // 프로그램 실행
+                    new SourceProgram(args, Convert.FromBase64String(BINARY));
+                }
+                else
+                {
+                    // 라이센스 갱신
+                    if (RefreshLic())
+                    {
+                        // 프로그램 실행
+                        new SourceProgram(args, Convert.FromBase64String(BINARY));
+                    }
+                    else
+                    {
+                        // TODO: 라이센스 구입
+                    }
+                }
+            }
+            else
+            {
+                RunLoginForm();
+            }
+        }
+
+        private void RunLoginForm()
+        {
+            // 로그인 폼 실행
+            Application.Run(new LoginForm());
+        }
+
+        private bool ExistLic()
+        {
+            // TODO: 라이센스 존재 여부 확인
+            return File.Exists(licenseFile);
+        }
+
+        private bool CheckLic()
+        {
+            // TODO: 올바른 라이센스인지 확인
+            return true;
+        }
+
+        private bool RefreshLic()
+        {
+            // TODO: 라이센스 갱신
+            return true;
         }
     }
 
