@@ -12,6 +12,9 @@ namespace SmartLockerTemplate
 {
     class Template
     {
+        // keyStr 가 바운드 됩니다.
+        private readonly string KEYSTR/*@KEYSTR*/;
+
         // exe 바이너리가 바운드 됩니다.
         private readonly string BINARY/*@BINARY*/;
 
@@ -89,7 +92,9 @@ namespace SmartLockerTemplate
             }
             else
             {
-                RunLoginForm();
+                MessageBox.Show("라이센스 구입이 필요합니다.", "라이센스 오류",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // RunLoginForm();
             }
         }
 
@@ -115,6 +120,16 @@ namespace SmartLockerTemplate
         {
             // TODO: 올바른 라이센스인지 확인
 
+            try
+            {
+                return KEYSTR.Equals(lic);
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+
+            /*
             string[] keyStr = lic.Split('\"');
             
             if (keyStr.Length != 3)
@@ -133,8 +148,9 @@ namespace SmartLockerTemplate
             {
                 return true;
             }
-            
+
             return false;
+            */
         }
 
         private bool RefreshLic()

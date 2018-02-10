@@ -30,17 +30,23 @@ namespace SmartLocker
             string curDir = Path.GetDirectoryName(fileLocation);
             string templateSrc = curDir + @"\SmartLockerTemplate\Template.cs";
 
+            string idStr;
+            string keyStr;
             string exeSrc;
             string icoSrc = null;
 
             switch (args.Length)
             {
-                case 1:
-                    exeSrc = args[0];
+                case 3:
+                    idStr = args[0];
+                    keyStr = args[1];
+                    exeSrc = args[2];
                     break;
-                case 2:
-                    exeSrc = args[0];
-                    icoSrc = args[1];
+                case 4:
+                    idStr = args[0];
+                    keyStr = args[1];
+                    exeSrc = args[2];
+                    icoSrc = args[3];
                     break;
                 default:
                     Console.WriteLine("exe 파일이 입력되지 않았습니다.");
@@ -76,7 +82,7 @@ namespace SmartLocker
             }
 
             // 실행파일에 맞는 cs 파일 생성
-            SaveCs(templateSrc, tmpCsSrc, bin, filename, hash);
+            SaveCs(templateSrc, tmpCsSrc, bin, filename, hash, keyStr);
 
             // 아이콘 파일 생성
             if (icoSrc == null)
@@ -100,6 +106,7 @@ namespace SmartLocker
             argStr += " \"" + tmpCsSrc + "\"";
             argStr += " \"" + curDir + @"\SmartLockerTemplate\LoginForm.cs" + "\"";
             argStr += " \"" + curDir + @"\SmartLockerTemplate\LoginForm.Designer.cs" + "\"";
+            argStr += " \"" + curDir + @"\SmartLockerTemplate\Compress.cs" + "\"";
 
             Process proc = ProcessStart(cscPath, argStr);
 
@@ -117,7 +124,8 @@ namespace SmartLocker
             
             if (proc.ExitCode == 0)
             {
-                string finalDir = curDir + @"\" + hash;
+                string finalDir = curDir + @"\locked\" + idStr;
+                // string finalDir = curDir + @"\" + hash;
                 string finalSrc = finalDir + @"\" + filename;
                 
                 // 파일을 저장할 디렉토리 생성
@@ -189,8 +197,14 @@ namespace SmartLocker
             return Sb.ToString();
         }
 
-        private void SaveCs(string templateLoc, string csLoc, byte[] bin, string filename, string hash)
-        {
+        private void SaveCs(
+            string templateLoc,
+            string csLoc,
+            byte[] bin,
+            string filename,
+            string hash,
+            string keyStr
+        ) {
             int isDotNet;
 
             try
@@ -207,6 +221,7 @@ namespace SmartLocker
 
             string csBinary = "=\"" + Convert.ToBase64String(bin) + "\"";
             string csFilename = "=\"" + filename + "\"";
+            string csKeystr = "=\"" + keyStr.Replace("\"", "\\\"") + "\"";
             string csIsdotnet = "=" + isDotNet;
 
             using (StreamReader sr = new StreamReader(templateLoc))
@@ -215,6 +230,7 @@ namespace SmartLocker
                 {
                     file.WriteLine(sr.ReadLine()
                             .Replace("/*@BINARY*/", csBinary)
+                            .Replace("/*@KEYSTR*/", csKeystr)
                             .Replace("/*@FILENAME*/", csFilename)
                             .Replace("/*@IS_DOT_NET*/", csIsdotnet)
                             .Replace("/*@EXE_HASH*/", "=\"" + hash + "\""));
